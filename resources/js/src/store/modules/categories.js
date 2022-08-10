@@ -43,25 +43,18 @@ const mutations = {
                 scat.name = category.name
             }                      
         }
-        else if(category.parent_id == null && category.old_parent_id !== null){
+        else if(category.old_child_id && category.parent_id == null){
 
+            state.categories.find(cat => cat.id == category.id).sub_category = category.sub_category
+            state.categories = state.categories.filter(cat => cat.id !== category.old_child_id)
+        }
+        else if(category.parent_id == null && category.old_parent_id !== null){
+            
             state.categories.unshift(category)
             const cat = state.categories.find(cat => cat.id == category.old_parent_id)
             const oldscat = cat.sub_category.filter(cat =>  cat.id !== category.id)
             state.categories.find(cat => cat.id == category.old_parent_id).sub_category = oldscat
-            
 
-
-
-        }
-        else if(category.old_parent_id == null && category.parent_id !== null){
-            state.categories.find(cat => cat.id == category.parent_id).sub_category.push(category)
-            if(category.sub_category.length > 0){
-                category.sub_category.forEach(scat => {
-                    state.categories.find(cat => cat.id == category.parent_id).sub_category.push(scat)
-                });
-            }
-            state.categories = state.categories.filter(cat => cat.id !== category.id)
         }
         else{
             let cat = state.categories.find(cat => cat.id == category.id)
@@ -101,11 +94,9 @@ const actions = {
     },
 
     async updateCategory ({commit},{newCategory,id}) {
-
         
         const res = await api.put(`/categories/${id}`,newCategory)
 
-        console.log(res)
         commit('update',res.data.data)
 
     },

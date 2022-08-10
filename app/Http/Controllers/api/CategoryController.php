@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\UpdateCategoryResource;
+use App\Http\Resources\UpdateSubCategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -91,8 +92,20 @@ class CategoryController extends Controller
 
             $old_parent_id = $category->parent_id;
 
-            if(isset($request->parent_id)){
+            if(isset($request->parent_id) && $category->parent_id == null){
                 Category::where('parent_id',$category->id)->update(['parent_id' => $request->parent_id]);
+            
+                $category->name = $request->name;
+                $category->parent_id = $request->parent_id ?? null;
+                $category->save();
+
+                $newCategory = Category::find($request->parent_id);
+
+                $newCategory->parent_id = null;
+
+                $newCategory->setAttribute('old_child_id',$category->id);
+
+                return new UpdateSubCategoryResource($newCategory);
             }
 
             $category->name = $request->name;

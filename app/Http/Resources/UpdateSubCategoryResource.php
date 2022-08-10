@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryResource extends JsonResource
+class UpdateSubCategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,6 +18,7 @@ class CategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'parent_id' => $this->parent_id ?? null,
+            'old_child_id' => $this->old_child_id,
             'sub_category' => SubCategoryResource::collection($this->sub_categories)
         ];
     }
