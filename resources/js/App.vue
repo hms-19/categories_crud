@@ -13,7 +13,7 @@ export default {
     components : {
         Navbar
     },
-    computed : mapGetters(['getCategories']),
+    computed() { mapGetters(['getCategories'])},
     methods : {
         ...mapActions(['fetchCategories'])
     },

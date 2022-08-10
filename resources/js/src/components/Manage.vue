@@ -16,7 +16,7 @@
                         <label for="parent_id" class="form-label">Select Parent Category</label>
                         <select name="parent_id" id="parent_id" v-model="parent_id" class="form-select">
                             <option value="">This is Parent</option>
-
+                            
                             <option :value="cat.id" :key="cat.id" v-for="cat in getCategories">
                                 {{cat.name}}
                             </option>
@@ -48,15 +48,31 @@ export default {
             id : '',
         }
     },
+    computed : mapGetters(['getCategories']),
     created() {
+        this.fetchCategories();
+
+        let oldCat = {};
+
         this.id = this.$route.params.id ?? null
         if(this.id) {
-            
-            this.fetchSingleCategory(this.id)
+            this.getCategories.map(cat => {
+                if(cat.id == this.id){
+                    oldCat = cat
+                }
+                cat.sub_category.map(scat => {
+                    if(scat.id == this.id){
+                        oldCat = scat
+                    }
+                })
+
+            })
+
+            oldCat = {...oldCat}
 
             this.title = 'Update Category'
-            // this.name = this.getCategory.name
-            // this.parent_id = this.getCategory.parent_id
+            this.name = oldCat.name
+            this.parent_id = oldCat.parent_id ?? null
 
         }
         else{
@@ -65,30 +81,32 @@ export default {
         
     },
 
-    computed: mapGetters(['getCategories','getCategory']),
     methods : {
-        ...mapActions(['fetchSingleCategory']),
+        ...mapActions(['addNewCategory','fetchCategories','updateCategory']),
 
-        async handleCreate (){
-            const res = await api.post('/categories',{
-                name: this.name,
-                parent_id: this.parent_id
-            })
+        handleCreate (){
+            let newCategory = {
+                name : this.name,
+                parent_id : this.parent_id
+            }
 
-            if(res.status == 200 && res.data.message){
+            if(this.name.length > 0){
+                this.addNewCategory(newCategory)
+                this.$router.push('/category')
+
+            }
+        },
+
+        async handleUpdate (){
+            let newCategory = {
+                name : this.name,
+                parent_id : this.parent_id
+            }
+            if(this.name.length > 0){
+                this.updateCategory({newCategory,id:this.id})
                 this.$router.push('/category')
             }
         },
-        async handleUpdate (){
-            const res = await api.put(`/categories/${this.id}`,{
-                name: this.name,
-                parent_id: this.parent_id
-            })
-
-            if(res.status == 200 && res.data.message){
-                this.$router.push('/category')
-            }
-        }
     }
 }
 </script>

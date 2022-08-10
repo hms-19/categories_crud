@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SubCategoryResource extends JsonResource
+class UpdateCategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,7 +17,15 @@ class SubCategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'parent_id' => $this->parent_id
+            'parent_id' => $this->parent_id ?? null,
+            'old_parent_id' => $this->old_parent_id,
+            'sub_category' => SubCategoryResource::collection($this->sub_categories)
+        ];
+    }
+
+    public function with($request){
+        return [
+            'message' => 'Success'
         ];
     }
 }

@@ -18,7 +18,14 @@ class CategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'parent_id' => $this->parent_id ?? null,
             'sub_category' => SubCategoryResource::collection($this->sub_categories)
+        ];
+    }
+
+    public function with($request){
+        return [
+            'message' => 'Success'
         ];
     }
 }

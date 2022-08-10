@@ -4,9 +4,12 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\UpdateCategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+
+use function PHPUnit\Framework\isNull;
 
 class CategoryController extends Controller
 {
@@ -47,9 +50,8 @@ class CategoryController extends Controller
 
             $category->save();
 
-            return response()->json([
-                'message' => 'Category Created Successfully'
-            ]);
+            return new CategoryResource($category);
+
         }
     }
 
@@ -87,14 +89,20 @@ class CategoryController extends Controller
         else{
             $category = Category::findOrFail($id);
 
+            $old_parent_id = $category->parent_id;
+
+            if(isset($request->parent_id)){
+                Category::where('parent_id',$category->id)->update(['parent_id' => $request->parent_id]);
+            }
+
             $category->name = $request->name;
             $category->parent_id = $request->parent_id ?? null;
-
             $category->save();
 
-            return response()->json([
-                'message' => 'Category Updated Successfully'
-            ]);
+            $category->setAttribute('old_parent_id',$old_parent_id);
+
+            return new UpdateCategoryResource($category);
+
         }
     }
 
@@ -108,10 +116,20 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail($id);
 
+        $old_parent_id = $category->parent_id;
+
+
+        if($category->parent_id == null){
+            $scats = Category::where('parent_id',$category->id)->get();
+            foreach($scats as $scat){
+                $scat->delete();
+            }
+        }
+
         $category->delete();
 
-        return response()->json([
-            'message' => 'Category Deleted Successfully'
-        ]);
+        $category->setAttribute('old_parent_id',$old_parent_id);
+
+        return new UpdateCategoryResource($category);
     }
 }
