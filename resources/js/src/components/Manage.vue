@@ -10,6 +10,7 @@
                     <div class="mb-3">
                         <label for="name" class="form-label">Enter Category Name <span class="text-danger">*</span></label>
                         <input type="text" id="name" v-model="name" placeholder="Category Name" class="form-control">
+                        <p class="text-danger">{{name_error}}</p>
                     </div>
 
                     <div class="mb-3">
@@ -36,7 +37,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { api } from '../api'
 
 export default {
     name : "Manage",
@@ -46,6 +46,7 @@ export default {
             name : '',
             parent_id : null,
             id : '',
+            name_error : ''
         }
     },
     computed : mapGetters(['getCategories']),
@@ -93,7 +94,9 @@ export default {
             if(this.name.length > 0){
                 this.addNewCategory(newCategory)
                 this.$router.push('/category')
-
+            }
+            else{
+                this.name_error = 'Please Fill Category Name'
             }
         },
 
@@ -105,6 +108,9 @@ export default {
             if(this.name.length > 0){
                 this.updateCategory({newCategory,id:this.id})
                 this.$router.push('/category')
+            }
+            else{
+                this.name_error = 'Please Fill Category Name'
             }
         },
     }
