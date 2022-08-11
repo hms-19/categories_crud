@@ -1,7 +1,7 @@
 <template>
       <div class="container">
         <div class="row">
-          <div class="col-md-8 col-sm-12 mx-auto" v-if="getCategories">
+          <div class="col-md-8 col-sm-12 mx-auto" v-if="getCategories.length > 0">
             <div
                 class=""
                 v-for="element in getCategories"
