@@ -23,7 +23,7 @@
                   <div
                   class="list-group-item bg-gray-300 m-1 p-3 rounded-md d-flex justify-content-between align-items-center"
                   v-for="el in element.sub_category"
-                  :key="el.name"
+                  :key="el.id"
                   >
                   <p class="align-middle">
                     {{ el.name }}
