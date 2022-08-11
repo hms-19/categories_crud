@@ -10,7 +10,7 @@
                     <div class="mb-3">
                         <label for="name" class="form-label">Enter Category Name <span class="text-danger">*</span></label>
                         <input type="text" id="name" v-model="name" placeholder="Category Name" class="form-control">
-                        <p class="text-danger">{{name_error}}</p>
+                        <p class="text-danger mt-2">{{name_error}}</p>
                     </div>
 
                     <div class="mb-3">
@@ -18,7 +18,7 @@
                         <select name="parent_id" id="parent_id" v-model="parent_id" class="form-select">
                             <option value="">This is Parent</option>
                             
-                            <option :value="cat.id" :key="cat.id" v-for="cat in getCategories">
+                            <option :value="cat.id" :key="cat.id" v-for="cat in optionCategories">
                                 {{cat.name}}
                             </option>
                         </select>
@@ -46,7 +46,8 @@ export default {
             name : '',
             parent_id : null,
             id : '',
-            name_error : ''
+            name_error : '',
+            optionCategories : []
         }
     },
     computed : mapGetters(['getCategories']),
@@ -57,6 +58,9 @@ export default {
 
         this.id = this.$route.params.id ?? null
         if(this.id) {
+            this.optionCategories = this.getCategories.filter(cat => cat.id != Number(this.id))
+
+            console.log(this.optionCategories)
             this.getCategories.map(cat => {
                 if(cat.id == this.id){
                     oldCat = cat
@@ -74,7 +78,6 @@ export default {
             this.title = 'Update Category'
             this.name = oldCat.name
             this.parent_id = oldCat.parent_id ?? null
-
         }
         else{
             this.title = 'Create Category'
