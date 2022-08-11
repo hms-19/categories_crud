@@ -5,7 +5,7 @@
             <div
                 class=""
                 v-for="element in getCategories"
-                :key="element.name"
+                :key="element.id"
               >
                 
               <div class="bg-gray-700 m-1 py-3 rounded-md d-flex justify-content-between align-items-center">
