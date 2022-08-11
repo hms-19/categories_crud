@@ -60,7 +60,7 @@ export default {
         if(this.id) {
             this.optionCategories = this.getCategories.filter(cat => cat.id != Number(this.id))
 
-            console.log(this.optionCategories)
+            // console.log(this.optionCategories)
             this.getCategories.map(cat => {
                 if(cat.id == this.id){
                     oldCat = cat
